@@ -4,5 +4,5 @@ find_package(KDE4 REQUIRED)
 
 include(KDE4Defaults)
 
-add_subdirectory(ktp-image-sharer)
+add_subdirectory(image-sharer)
 add_subdirectory(ktp-test-exec)

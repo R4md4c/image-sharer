@@ -1,21 +1,20 @@
 /*
- * Copyright 2014  Ahmed Ibrahim Khalil <ahmedibrahimkhali@gmail.com>
+ * 
+ * Copyright (C) 2014  Ahmed I. Khalil <ahmedibrahimkhali@gmail.com>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
 
@@ -79,6 +78,11 @@ ShareProvider::ShareProvider(ShareService shareServiceType, QObject *parent)
     d->m_shareServiceType = shareServiceType;
 }
 
+ShareProvider::~ShareProvider()
+{
+    delete d;
+}
+
 void ShareProvider::setShareServiceType(ShareService shareServiceType)
 {
     delete d->m_sharer;
@@ -99,10 +103,10 @@ void ShareProvider::publish(const QString& filePath)
     KUrl fileUrl(filePath);
 
     KIO::MimetypeJob *mimetypeJob = KIO::mimetype(fileUrl, KIO::HideProgressInfo);
-    connect(mimetypeJob, SIGNAL(finished(KJob*)), this, SLOT(mimetypeJobFinished(KJob*)));
+    connect(mimetypeJob, SIGNAL(finished(KJob*)), this, SLOT(onMimetypeJobFinished(KJob*)));
 }
 
-void ShareProvider::mimetypeJobFinished(KJob* job)
+void ShareProvider::onMimetypeJobFinished(KJob* job)
 {
     KIO::MimetypeJob *mjob = qobject_cast<KIO::MimetypeJob *>(job);
     if (!mjob) {
@@ -126,21 +130,21 @@ void ShareProvider::mimetypeJobFinished(KJob* job)
     }
 
     KIO::FileJob *fjob = KIO::open(mjob->url(), QIODevice::ReadOnly);
-    connect(fjob, SIGNAL(open(KIO::Job*)), this, SLOT(openFile(KIO::Job*)));
+    connect(fjob, SIGNAL(open(KIO::Job*)), this, SLOT(onFileOpened(KIO::Job*)));
 
     mjob->deleteLater();
 }
 
-void ShareProvider::openFile(KIO::Job* job)
+void ShareProvider::onFileOpened(KIO::Job* job)
 {
     // finished opening the file, now try to read it's content
     KIO::FileJob *fjob = static_cast<KIO::FileJob*>(job);
     fjob->read(fjob->size());
     connect(fjob, SIGNAL(data(KIO::Job*,QByteArray)),
-            this, SLOT(finishedContentData(KIO::Job*,QByteArray)));
+            this, SLOT(onFinishedReadingFile(KIO::Job*,QByteArray)));
 }
 
-void ShareProvider::finishedContentData(KIO::Job* job, const QByteArray& data)
+void ShareProvider::onFinishedReadingFile(KIO::Job* job, const QByteArray& data)
 {
     job->disconnect(this);
     qobject_cast<KIO::FileJob *>(job)->close();
@@ -160,19 +164,19 @@ void ShareProvider::finishedContentData(KIO::Job* job, const QByteArray& data)
         KIO::TransferJob *tJob = KIO::http_post(sharer->url(), sharer->postBody(data), KIO::HideProgressInfo);
         tJob->setMetaData(sharer->headers());
         connect(tJob, SIGNAL(data(KIO::Job*,QByteArray)),
-                this, SLOT(transferJobDataReceived(KIO::Job*,QByteArray)));
-        connect(tJob, SIGNAL(result(KJob*)), this, SLOT(transferJobResultReceived(KJob*)));
+                this, SLOT(onTransferJobDataReceived(KIO::Job*,QByteArray)));
+        connect(tJob, SIGNAL(result(KJob*)), this, SLOT(onTransferJobResultReceived(KJob*)));
 
     }
 }
 
-void ShareProvider::transferJobDataReceived(KIO::Job* job, QByteArray data)
+void ShareProvider::onTransferJobDataReceived(KIO::Job* job, QByteArray data)
 {
     Q_UNUSED(job);
     d->m_data.append(data);
 }
 
-void ShareProvider::transferJobResultReceived(KJob* job)
+void ShareProvider::onTransferJobResultReceived(KJob* job)
 {
     if (d->m_data.size() == 0) {
         emit finishedError(i18n("Service was not available"));
@@ -198,15 +202,6 @@ void ShareProvider::transferJobResultReceived(KJob* job)
             }
         }
     }
-
-    job->deleteLater();
-}
-
-
-
-ShareProvider::~ShareProvider()
-{
-    delete d;
 }
 
 

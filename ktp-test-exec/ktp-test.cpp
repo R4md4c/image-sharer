@@ -8,7 +8,7 @@
 #include <QMessageBox>
 
 
-#include "ktp-image-sharer/shareprovider.h"
+#include "image-sharer/shareprovider.h"
 
 ktp_test::ktp_test()
 {

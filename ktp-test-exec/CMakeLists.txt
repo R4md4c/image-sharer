@@ -7,6 +7,6 @@ set(ktp-test_SRCS ktp-test.cpp main.cpp)
 
 kde4_add_executable(ktp-test-exec ${ktp-test_SRCS})
 
-target_link_libraries(ktp-test-exec ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ktp-image-sharer)
+target_link_libraries(ktp-test-exec ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} image-sharer)
 
 install(TARGETS ktp-test-exec RUNTIME DESTINATION bin)
