@@ -46,7 +46,7 @@ KUrl ImgurSharer::url() const
 QByteArray ImgurSharer::postBody(const QByteArray &imageData)
 {
     // Create the request body
-    m_form.addFile("image", m_contentPath, imageData);
+    m_form.addFile(QLatin1String("image"), m_contentPath, imageData);
     m_form.finish();
     return m_form.formData();
 }
@@ -56,13 +56,13 @@ void ImgurSharer::parseResponse(const QByteArray& responseData)
     QJson::Parser parser;
     bool ok = false;
     QVariantMap resultMap = parser.parse(responseData, &ok).toMap();
-    if ( resultMap.contains("error") ) {
+    if ( resultMap.contains(QLatin1String("error")) ) {
         m_hasError = true;
-        QVariantMap errorMap = resultMap["error"].toMap();
-        m_errorMessage = errorMap["message"].toString();
+        QVariantMap errorMap = resultMap[QLatin1String("error")].toMap();
+        m_errorMessage = errorMap[QLatin1String("message")].toString();
     } else {
-        QVariantMap uploadMap = resultMap["upload"].toMap();
-        QVariantMap linksMap = uploadMap["links"].toMap();
-        m_imageUrl = KUrl(linksMap["original"].toString());
+        QVariantMap uploadMap = resultMap[QLatin1String("upload")].toMap();
+        QVariantMap linksMap = uploadMap[QLatin1String("links")].toMap();
+        m_imageUrl = KUrl(linksMap[QLatin1String("original")].toString());
     }
 }

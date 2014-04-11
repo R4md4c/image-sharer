@@ -86,9 +86,9 @@ ShareProvider::~ShareProvider()
 QMap< QString, ShareProvider::ShareService > ShareProvider::availableShareServices()
 {
     QMap<QString, ShareProvider::ShareService> availableServices;
-    availableServices.insert("Imgur", Imgur);
-    availableServices.insert("Simplest Image Hosting", SimplestImageHosting);
-    availableServices.insert("Image Bin", ImageBin);
+    availableServices.insert(QLatin1String("Imgur"), Imgur);
+    availableServices.insert(QLatin1String("Simplest Image Hosting"), SimplestImageHosting);
+    availableServices.insert(QLatin1String("Image Bin"), ImageBin);
     return availableServices;
 }
 
@@ -124,18 +124,18 @@ void ShareProvider::onMimetypeJobFinished(KJob* job)
     }
 
     if (mjob->error()) {
-        emit finishedError(this, mjob->errorString());
+        Q_EMIT finishedError(this, mjob->errorString());
         return;
     }
 
     QString mimeType = mjob->mimetype();
     if (mimeType.isEmpty()) {
-        emit finishedError(this, i18n("Could not detect the file's mimetype"));
+        Q_EMIT finishedError(this, i18n("Could not detect the file's mimetype"));
         return;
     }
 
     if (!mimeType.startsWith(QLatin1String("image/"))) {
-        emit finishedError(this, i18n("File Type is not an image"));
+        Q_EMIT finishedError(this, i18n("File Type is not an image"));
         return;
     }
 
@@ -160,7 +160,7 @@ void ShareProvider::onFinishedReadingFile(KIO::Job* job, const QByteArray& data)
     qobject_cast<KIO::FileJob *>(job)->close();
 
     if (data.length() == 0) {
-        emit finishedError(this, i18n("It was not possible to read the selected file"));
+        Q_EMIT finishedError(this, i18n("It was not possible to read the selected file"));
         return;
     }
 
@@ -168,7 +168,7 @@ void ShareProvider::onFinishedReadingFile(KIO::Job* job, const QByteArray& data)
     if (sharer) {
         KUrl sharerUrl = sharer->url();
         if (!sharerUrl.isValid()) {
-            emit finishedError(this, i18n("Service Url is not valid"));
+            Q_EMIT finishedError(this, i18n("Service Url is not valid"));
             return;
         }
         KIO::TransferJob *tJob = KIO::http_post(sharer->url(), sharer->postBody(data), KIO::HideProgressInfo);
@@ -189,7 +189,7 @@ void ShareProvider::onTransferJobDataReceived(KIO::Job* job, QByteArray data)
 void ShareProvider::onTransferJobResultReceived(KJob* job)
 {
     if (d->m_data.size() == 0) {
-        emit finishedError(this, i18n("Service was not available"));
+        Q_EMIT finishedError(this, i18n("Service was not available"));
         return;
     }
 
@@ -203,12 +203,12 @@ void ShareProvider::onTransferJobResultReceived(KJob* job)
             if (tfJob->isErrorPage() || sharer->hasError()) {
                 QString errorMessage = sharer->errorMessage();
                 if (!errorMessage.isEmpty()) {
-                    emit finishedError(this, errorMessage);
+                    Q_EMIT finishedError(this, errorMessage);
                 } else {
-                    emit finishedError(this, tfJob->errorString());
+                    Q_EMIT finishedError(this, tfJob->errorString());
                 }
             } else {
-                emit finishedSuccess(this, sharer->imageUrl().url());
+                Q_EMIT finishedSuccess(this, sharer->imageUrl().url());
             }
         }
     }

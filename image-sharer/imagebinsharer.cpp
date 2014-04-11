@@ -36,21 +36,21 @@ void ImageBinSharer::parseResponse(const QByteArray& responseData)
     // "status:1I0zzt2xu949
     // url:http://ibin.co/1I0zzt2xu949
 
-    QString responseString = QString(responseData);
-    QString urlPrefix = "url:";
+    QString responseString = QString(QLatin1String(responseData));
+    QString urlPrefix = QLatin1String("url:");
     int urlPrefixIndex = responseString.indexOf(urlPrefix);
     if (urlPrefixIndex != -1) {
         QString imageUrl = responseString.mid(urlPrefixIndex + urlPrefix.length()).trimmed();
         m_imageUrl = KUrl(imageUrl);
     } else {
         m_hasError = true;
-        m_errorMessage = responseString.replace("status:error:", "");
+        m_errorMessage = responseString.replace(QLatin1String("status:error:"), QLatin1String(""));
     }
 }
 
 QByteArray ImageBinSharer::postBody(const QByteArray& imageData)
 {
-    m_form.addFile("file", m_contentPath, imageData);
+    m_form.addFile(QLatin1String("file"), m_contentPath, imageData);
     m_form.finish();
     return m_form.formData();
 }

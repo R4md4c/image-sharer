@@ -36,7 +36,6 @@
 // KDE includes
 
 #include <kapplication.h>
-#include <kdebug.h>
 #include <kmimetype.h>
 #include <kurl.h>
 #include <krandom.h>
@@ -69,7 +68,7 @@ void MPForm::finish()
 bool MPForm::addPair(const QString& name, const QString& value, const QString& contentType)
 {
     QByteArray str;
-    QString content_length = QString("%1").arg(value.length());
+    QString content_length = QString(QLatin1String("%1")).arg(value.length());
 
     str += "--";
     str += m_boundary;
@@ -123,7 +122,7 @@ bool MPForm::addFile(const QString& name, const QString& path)
     QByteArray imageData = imageFile.readAll();
 
     QByteArray str;
-    QString file_size = QString("%1").arg(imageFile.size());
+    QString file_size = QString(QLatin1String("%1")).arg(imageFile.size());
     imageFile.close();
 
     str += "--";
@@ -163,7 +162,7 @@ bool MPForm::addFile(const QString& name, const QString& filePath, const QByteAr
     }
 
     QByteArray str;
-    QString file_size = QString("%1").arg(fileData.size());
+    QString file_size = QString(QLatin1String("%1")).arg(fileData.size());
 
     str += "--";
     str += m_boundary;
@@ -191,12 +190,12 @@ bool MPForm::addFile(const QString& name, const QString& filePath, const QByteAr
 
 QString MPForm::contentType() const
 {
-    return QString("Content-Type: multipart/form-data; boundary=" + m_boundary);
+    return QString(QLatin1String("Content-Type: multipart/form-data; boundary=" + m_boundary));
 }
 
 QString MPForm::boundary() const
 {
-    return m_boundary;
+    return QLatin1String(m_boundary);
 }
 
 QByteArray MPForm::formData() const

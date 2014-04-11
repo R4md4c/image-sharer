@@ -30,7 +30,7 @@ AbstractSharer::~AbstractSharer()
 QMap< QString, QString > AbstractSharer::headers() const
 {
     QMap<QString, QString> headers;
-    headers.insert("content-type", m_form.contentType());
+    headers.insert(QLatin1String("content-type"), m_form.contentType());
     return headers;
 }
 

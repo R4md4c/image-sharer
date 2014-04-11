@@ -34,10 +34,10 @@ KUrl SimplestImageHostingSharer::url() const
 
 void SimplestImageHostingSharer::parseResponse(const QByteArray& responseData)
 {
-    QString responseString(responseData);
-    QRegExp exp("800\n(http://.+)\n");
+    QString responseString = QLatin1String(responseData);
+    QRegExp exp(QLatin1String("800\n(http://.+)\n"));
     if ( exp.indexIn(responseString) != -1) {
-        m_imageUrl = responseString.replace("800", "").replace("\n", "");
+        m_imageUrl = responseString.replace(QLatin1String("800"), QLatin1String("")).replace(QLatin1String("\n"), QLatin1String(""));
     } else {
         m_hasError = true;
         m_errorMessage = responseString;
@@ -46,7 +46,7 @@ void SimplestImageHostingSharer::parseResponse(const QByteArray& responseData)
 
 QByteArray SimplestImageHostingSharer::postBody(const QByteArray& imageData)
 {
-    m_form.addFile("fileName", m_contentPath, imageData);
+    m_form.addFile(QLatin1String("fileName"), m_contentPath, imageData);
     m_form.finish();
 
     return m_form.formData();
