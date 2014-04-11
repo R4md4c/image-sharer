@@ -124,18 +124,18 @@ void ShareProvider::onMimetypeJobFinished(KJob* job)
     }
 
     if (mjob->error()) {
-        emit finishedError(mjob->errorString());
+        emit finishedError(this, mjob->errorString());
         return;
     }
 
     QString mimeType = mjob->mimetype();
     if (mimeType.isEmpty()) {
-        emit finishedError(i18n("Could not detect the file's mimetype"));
+        emit finishedError(this, i18n("Could not detect the file's mimetype"));
         return;
     }
 
     if (!mimeType.startsWith(QLatin1String("image/"))) {
-        emit finishedError(i18n("File Type is not an image"));
+        emit finishedError(this, i18n("File Type is not an image"));
         return;
     }
 
@@ -160,7 +160,7 @@ void ShareProvider::onFinishedReadingFile(KIO::Job* job, const QByteArray& data)
     qobject_cast<KIO::FileJob *>(job)->close();
 
     if (data.length() == 0) {
-        emit finishedError(i18n("It was not possible to read the selected file"));
+        emit finishedError(this, i18n("It was not possible to read the selected file"));
         return;
     }
 
@@ -168,7 +168,7 @@ void ShareProvider::onFinishedReadingFile(KIO::Job* job, const QByteArray& data)
     if (sharer) {
         KUrl sharerUrl = sharer->url();
         if (!sharerUrl.isValid()) {
-            emit finishedError(i18n("Service Url is not valid"));
+            emit finishedError(this, i18n("Service Url is not valid"));
             return;
         }
         KIO::TransferJob *tJob = KIO::http_post(sharer->url(), sharer->postBody(data), KIO::HideProgressInfo);
@@ -189,7 +189,7 @@ void ShareProvider::onTransferJobDataReceived(KIO::Job* job, QByteArray data)
 void ShareProvider::onTransferJobResultReceived(KJob* job)
 {
     if (d->m_data.size() == 0) {
-        emit finishedError(i18n("Service was not available"));
+        emit finishedError(this, i18n("Service was not available"));
         return;
     }
 
@@ -203,12 +203,12 @@ void ShareProvider::onTransferJobResultReceived(KJob* job)
             if (tfJob->isErrorPage() || sharer->hasError()) {
                 QString errorMessage = sharer->errorMessage();
                 if (!errorMessage.isEmpty()) {
-                    emit finishedError(errorMessage);
+                    emit finishedError(this, errorMessage);
                 } else {
-                    emit finishedError(tfJob->errorString());
+                    emit finishedError(this, tfJob->errorString());
                 }
             } else {
-                emit finishedSuccess(sharer->imageUrl().url());
+                emit finishedSuccess(this, sharer->imageUrl().url());
             }
         }
     }

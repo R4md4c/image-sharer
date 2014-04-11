@@ -53,8 +53,8 @@ public:
     void publish(const QString &filePath);
 
 Q_SIGNALS:
-    void finishedSuccess(const QString &url);
-    void finishedError(const QString &msg);
+    void finishedSuccess(ShareProvider *provider, const QString &url);
+    void finishedError(ShareProvider *provider, const QString &msg);
 
 protected Q_SLOTS:
     void onMimetypeJobFinished(KJob *job);

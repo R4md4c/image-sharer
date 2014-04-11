@@ -3,6 +3,8 @@
 
 #include <QtGui/QMainWindow>
 
+class ShareProvider;
+
 class ktp_test : public QMainWindow
 {
     Q_OBJECT
@@ -11,8 +13,8 @@ public:
     virtual ~ktp_test();
 
 private Q_SLOTS:
-    void slotShareProviderFinishedSuccess(const QString &result);
-    void slotShareProviderFinishedFailure(const QString &result);
+    void slotShareProviderFinishedSuccess(ShareProvider *provider, const QString &result);
+    void slotShareProviderFinishedFailure(ShareProvider *provider, const QString &result);
 
 };
 

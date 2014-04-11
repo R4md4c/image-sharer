@@ -20,8 +20,8 @@ ktp_test::ktp_test()
     connect(a, SIGNAL(triggered()), SLOT(close()) );
     menuBar()->addMenu( "File" )->addAction( a );
     ShareProvider *provider = new ShareProvider(ShareProvider::availableShareServices().value("Simplest Image Hosting"), this);
-    connect(provider, SIGNAL(finishedSuccess(QString)), this, SLOT(slotShareProviderFinishedSuccess(QString)));
-    connect(provider, SIGNAL(finishedError(QString)), this, SLOT(slotShareProviderFinishedFailure(QString)));
+    connect(provider, SIGNAL(finishedError(ShareProvider*,QString)), this, SLOT(slotShareProviderFinishedFailure(ShareProvider*,QString)));
+    connect(provider, SIGNAL(finishedSuccess(ShareProvider*,QString)), this, SLOT(slotShareProviderFinishedSuccess(ShareProvider*,QString)));
 
     // Put the image paath here
     provider->publish("/home/ramdac/1975269_620119998057124_1889819789_n.jpg");
@@ -31,15 +31,16 @@ ktp_test::ktp_test()
 ktp_test::~ktp_test()
 {}
 
-void ktp_test::slotShareProviderFinishedFailure(const QString& result)
+void ktp_test::slotShareProviderFinishedFailure(ShareProvider* provider, const QString& result)
 {
     QMessageBox::critical(this, "Failure", result);
+    provider->deleteLater();
 }
 
-void ktp_test::slotShareProviderFinishedSuccess(const QString& result)
+void ktp_test::slotShareProviderFinishedSuccess(ShareProvider* provider, const QString& result)
 {
     QMessageBox::information(this, "Success", result);
+    provider->deleteLater();
 }
-
 
 #include "ktp-test.moc"
