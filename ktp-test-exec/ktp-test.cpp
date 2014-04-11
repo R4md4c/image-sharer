@@ -19,7 +19,7 @@ ktp_test::ktp_test()
     a->setText( "Quit" );
     connect(a, SIGNAL(triggered()), SLOT(close()) );
     menuBar()->addMenu( "File" )->addAction( a );
-    ShareProvider *provider = new ShareProvider(ShareProvider::Imgur, this);
+    ShareProvider *provider = new ShareProvider(ShareProvider::availableShareServices().value("Simplest Image Hosting"), this);
     connect(provider, SIGNAL(finishedSuccess(QString)), this, SLOT(slotShareProviderFinishedSuccess(QString)));
     connect(provider, SIGNAL(finishedError(QString)), this, SLOT(slotShareProviderFinishedFailure(QString)));
 

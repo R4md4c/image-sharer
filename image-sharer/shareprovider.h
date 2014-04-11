@@ -21,6 +21,7 @@
 #define SHAREPROVIDER_H
 
 #include <QObject>
+#include <QMap>
 
 class ShareProviderPrivate;
 class KJob;
@@ -44,6 +45,8 @@ public:
     ShareProvider(ShareService shareServiceType, QObject *parent = 0);
     virtual ~ShareProvider();
 
+    static QMap<QString, ShareService> availableShareServices();
+    
     ShareService shareServiceType() const;
     void setShareServiceType(ShareService shareServiceType);
 

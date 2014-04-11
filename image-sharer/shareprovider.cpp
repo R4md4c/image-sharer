@@ -83,6 +83,16 @@ ShareProvider::~ShareProvider()
     delete d;
 }
 
+QMap< QString, ShareProvider::ShareService > ShareProvider::availableShareServices()
+{
+    QMap<QString, ShareProvider::ShareService> availableServices;
+    availableServices.insert("Imgur", Imgur);
+    availableServices.insert("Simplest Image Hosting", SimplestImageHosting);
+    availableServices.insert("Image Bin", ImageBin);
+    return availableServices;
+}
+
+
 void ShareProvider::setShareServiceType(ShareService shareServiceType)
 {
     delete d->m_sharer;
