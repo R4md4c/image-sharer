@@ -1,5 +1,5 @@
 /*
- * 
+ *
  * Copyright (C) 2014  Ahmed I. Khalil <ahmedibrahimkhali@gmail.com>
  *
  * This library is free software; you can redistribute it and/or

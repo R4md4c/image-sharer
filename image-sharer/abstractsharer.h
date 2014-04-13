@@ -39,7 +39,7 @@ public:
     AbstractSharer(const QString &contentPath);
     virtual ~AbstractSharer();
 
-    /** 
+    /**
      * @return A KUrl that points to the uploading endpoint of the Share Service
      */
     virtual KUrl url() const = 0;
@@ -64,11 +64,11 @@ public:
     virtual bool hasError() const;
 
     /**
-     * @return a string that contains the error message. If the server response has an error 
+     * @return a string that contains the error message. If the server response has an error
      * this method should return it.
      * */
     virtual QString errorMessage() const;
-    
+
     /**
      * @return A URL that contains the image url from the service if the response is success.
      */

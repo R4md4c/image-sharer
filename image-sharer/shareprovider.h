@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QMap>
 
+#include "imagesharer_export.h"
+
 class ShareProviderPrivate;
 class KJob;
 
@@ -30,7 +32,7 @@ namespace KIO {
 class Job;
 }
 
-class ShareProvider : public QObject
+class IMAGESHARER_EXPORT ShareProvider : public QObject
 {
     Q_OBJECT
 
@@ -46,7 +48,7 @@ public:
     virtual ~ShareProvider();
 
     static QMap<QString, ShareService> availableShareServices();
-    
+
     ShareService shareServiceType() const;
     void setShareServiceType(ShareService shareServiceType);
 
