@@ -163,6 +163,8 @@ void ShareProvider::onFinishedReadingFile(KIO::Job* job, const QByteArray& data)
         Q_EMIT finishedError(this, i18n("It was not possible to read the selected file"));
         return;
     }
+    
+    d->m_data.clear();
 
     AbstractSharer *sharer = d->getSharer();
     if (sharer) {
